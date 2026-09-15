@@ -1,3 +1,3 @@
-Group Project
-Module: Database Systems
+Group Project |
+Module: Database Systems |
 Project Name: TCN

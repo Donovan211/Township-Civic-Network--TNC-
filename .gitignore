@@ -1,0 +1,28 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Local Copilot customization
+.github/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local database and logs
+*.sqlite3
+*.db
+*.log
+
+# IDE and operating-system files
+.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db

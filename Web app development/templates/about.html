@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}About – TCN{% endblock %}
+{% block body %}
+<h1>About Township Civic Network</h1>
+<p class="lead">A digital marketplace built for South African townships — by students, for communities.</p>
+
+<div class="card-grid">
+    <div class="card">
+        <h3>Our Mission</h3>
+        <p>Make it easy and safe for residents to find skilled local workers, and for freelancers to grow a reputation and income without leaving their community.</p>
+    </div>
+    <div class="card">
+        <h3>Verification</h3>
+        <p>Every freelancer is reviewed by an administrator before appearing in search. Customers only see verified profiles.</p>
+    </div>
+    <div class="card">
+        <h3>Safety</h3>
+        <p>Both parties can submit safety reports after a booking. Admins investigate and update report status.</p>
+    </div>
+</div>
+
+{% if stats %}
+<h2 style="margin-top:2rem">Platform at a glance</h2>
+<div class="stats-row" style="background:var(--primary);padding:1.25rem;border-radius:var(--radius);color:#fff">
+    <div class="stat-box"><div class="num">{{ stats.customers }}</div><div class="label">Customers</div></div>
+    <div class="stat-box"><div class="num">{{ stats.verified }}</div><div class="label">Verified freelancers</div></div>
+    <div class="stat-box"><div class="num">{{ stats.bookings }}</div><div class="label">Total bookings</div></div>
+    <div class="stat-box"><div class="num">R{{ '%.0f'|format(stats.revenue) }}</div><div class="label">Paid volume</div></div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Register as Freelancer – TCN{% endblock %}
+{% block body %}
+<h2>Register as Freelancer</h2>
+<p class="lead">Join the network. An admin will verify you before you appear in search.</p>
+<form method="POST" class="form-card">
+    <label>First Name</label>
+    <input type="text" name="first_name" required>
+    <label>Last Name</label>
+    <input type="text" name="last_name" required>
+    <label>Phone Number</label>
+    <input type="text" name="phone" required placeholder="08x xxx xxxx">
+    <label>Email</label>
+    <input type="email" name="email" required>
+    <label>Password</label>
+    <input type="password" name="password" required minlength="6">
+    <label>Short Bio (optional)</label>
+    <textarea name="bio" maxlength="500" placeholder="Tell customers about your skills and experience…"></textarea>
+    <button type="submit">Create Account</button>
+</form>
+<p style="margin-top:1rem">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+{% endblock %}

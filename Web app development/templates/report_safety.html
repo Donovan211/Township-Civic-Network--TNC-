@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Safety Report – TCN{% endblock %}
+
+{% block body %}
+<h2>Submit Safety Report</h2>
+<p class="lead">
+    Booking #{{ booking.booking_id }}
+    ({{ booking.scheduled_date }}).
+    Reports are reviewed by administrators.
+</p>
+
+<form method="POST" class="form-card">
+    <label for="reason">Reason</label>
+    <input type="text" id="reason" name="reason" required maxlength="100"
+           placeholder="e.g. Late arrival, Unsafe environment, Rude behaviour">
+
+    <label for="description">Description (optional)</label>
+    <textarea id="description" name="description" maxlength="300"
+              placeholder="Provide more detail..."></textarea>
+
+    <button type="submit" class="btn-danger">Submit Report</button>
+</form>
+
+<p style="margin-top:1rem"><a href="{{ url_for('dashboard') }}">← Cancel</a></p>
+{% endblock %}

@@ -1,6 +1,7 @@
 USE freelancing_network;
 
--- SAMPLE DATA: 
+USE freelancing_network;
+
 DROP PROCEDURE IF EXISTS sample_data;
 
 CREATE TEMPORARY TABLE IF NOT EXISTS load_guard (
@@ -29,12 +30,12 @@ ALTER TABLE booking AUTO_INCREMENT = 1;
 
 START TRANSACTION;
 
-INSERT INTO administrator (admin_name)
-VALUES ('Unathi Spele'),
-       ('Siyambulela Williams'),
-       ('Busisiwe Tyhokolo'),          
-       ('Thandolwethu Mlaba'),
-       ('Abongile Sima');
+INSERT INTO administrator (admin_name, admin_email)
+VALUES ('Unathi Spele', 'unathi@tcn.local'),
+       ('Siyambulela Williams', 'siyambulela@tcn.local'),
+       ('Busisiwe Tyhokolo', 'busisiwe@tcn.local'),
+       ('Thandolwethu Mlaba', 'thandolwethu@tcn.local'),
+       ('Abongile Sima', 'abongile@tcn.local');
 
 INSERT INTO customer (cus_first_name, cus_last_name, cus_phone_num, cus_email)
 VALUES ('Alexandra', 'Van Heerden', '0814447392', 'alexandra221@gmail.com'),

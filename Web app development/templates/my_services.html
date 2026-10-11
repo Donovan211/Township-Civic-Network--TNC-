@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}My Services – TCN{% endblock %}
+
+{% block body %}
+<h2>Manage My Services</h2>
+<p class="lead">Select the services you offer. Customers will only be able to book the ones you tick.</p>
+
+<form method="POST" class="form-card" style="max-width:520px">
+    <div class="checkbox-group">
+        {% for s in services %}
+            {% if loop.first or services[loop.index0 - 1].service_category_id != s.service_category_id %}
+            <h4 style="margin:1rem 0 0.25rem">{{ s.category.service_category_name if s.category else 'Other' }}</h4>
+            {% endif %}
+            <label>
+                <input type="checkbox" name="services" value="{{ s.service_id }}"
+                       {% if s.service_id in my_service_ids %}checked{% endif %}>
+                {{ s.service_name }}
+            </label>
+        {% endfor %}
+    </div>
+
+    <button type="submit">Save Services</button>
+</form>
+{% endblock %}

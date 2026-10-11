@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Admin · Bookings – TCN{% endblock %}
+{% block body %}
+<h2>All Bookings</h2>
+<div style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+    <a href="{{ url_for('admin_bookings') }}" class="btn btn-sm {% if not status %}btn-accent{% else %}btn-secondary{% endif %}">All</a>
+    {% for s in ['pending','confirmed','completed','cancelled'] %}
+    <a href="{{ url_for('admin_bookings', status=s) }}" class="btn btn-sm {% if status == s %}btn-accent{% else %}btn-secondary{% endif %}">{{ s|capitalize }}</a>
+    {% endfor %}
+</div>
+<div class="table-wrap">
+<table>
+    <thead><tr><th>#</th><th>Booked</th><th>Scheduled</th><th>Customer</th><th>Freelancer</th><th>Location</th><th>Status</th><th>Payment</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for b in bookings %}
+    <tr>
+        <td><a href="{{ url_for('receipt', booking_id=b.booking_id) }}">{{ b.booking_id }}</a></td>
+        <td>{{ b.booking_date }}</td>
+        <td>{{ b.scheduled_date }}</td>
+        <td>{{ b.customer.cus_first_name }} {{ b.customer.cus_last_name }}</td>
+        <td>{{ b.freelancer.f_first_name }} {{ b.freelancer.f_last_name }}</td>
+        <td>{{ b.location.location_name }}</td>
+        <td><span class="badge badge-{{ b.booking_status }}">{{ b.booking_status }}</span></td>
+        <td>{% if b.payment %}R{{ '%.2f'|format(b.payment.payment_amount) }} <span class="badge badge-{{ b.payment.payment_status }}">{{ b.payment.payment_status }}</span>{% else %}–{% endif %}</td>
+        <td><form method="POST" action="{{ url_for('admin_delete', kind='booking', item_id=b.booking_id) }}" onsubmit="return confirm('Delete this booking and its payment/review?')" style="display:inline"><button type="submit" class="btn btn-sm btn-danger">Delete</button></form></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

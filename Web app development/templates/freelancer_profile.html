@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ freelancer.f_first_name }} {{ freelancer.f_last_name }} – TCN{% endblock %}
+{% block body %}
+<div class="card" style="display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start">
+    <img src="{{ url_for('static', filename='uploads/' + (freelancer.profile_pic or 'default.jpg')) }}"
+         class="profile-pic" alt="" onerror="this.src='https://via.placeholder.com/96?text={{ freelancer.f_first_name[0] }}'">
+    <div style="flex:1">
+        <h2 style="margin-bottom:0.25rem">{{ freelancer.full_name }}</h2>
+        {% if freelancer.verification_status == 'verified' %}
+            <span class="badge badge-verified">Verified</span>
+        {% else %}
+            <span class="badge badge-unverified">{{ freelancer.verification_status }}</span>
+        {% endif %}
+        {% if avg_rating %}
+            <p class="stars" style="margin-top:0.5rem">
+                {{ '★' * avg_rating|int }}{{ '☆' * (5 - avg_rating|int) }}
+                <span style="color:var(--muted);font-size:0.9rem">{{ avg_rating }} · {{ review_count }} reviews · {{ completed_jobs }} jobs done</span>
+            </p>
+        {% else %}
+            <p style="color:var(--muted);margin-top:0.4rem">{{ completed_jobs }} jobs completed · No reviews yet</p>
+        {% endif %}
+        {% if freelancer.bio %}<p style="margin-top:0.6rem">{{ freelancer.bio }}</p>{% endif %}
+        <p style="color:var(--muted);margin-top:0.4rem">{{ freelancer.f_email }} · {{ freelancer.f_phone_num }}</p>
+        {% if session.user_type == 'customer' and freelancer.verification_status == 'verified' %}
+            <a href="{{ url_for('book_freelancer', freelancer_id=freelancer.freelancer_id) }}" class="btn btn-accent">Book this Freelancer</a>
+        {% endif %}
+    </div>
+</div>
+
+{% if services %}
+<div class="card" style="margin-top:1.25rem">
+    <h3>Services Offered</h3>
+    <ul style="margin-left:1.2rem;margin-top:0.5rem">
+        {% for s in services %}
+            <li>{{ s.service_name }}{% if s.category %} <span style="color:var(--muted)">({{ s.category.service_category_name }})</span>{% endif %}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% if portfolio %}
+<div style="margin-top:1.5rem">
+    <h3>Portfolio</h3>
+    <div class="portfolio-grid">
+        {% for img in portfolio %}
+        <div class="portfolio-item">
+            <img src="{{ url_for('static', filename='uploads/' + img.filename) }}" alt=""
+                 onerror="this.src='https://via.placeholder.com/180x140?text=Work'">
+            {% if img.caption %}<div class="caption">{{ img.caption }}</div>{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if reviews %}
+<div style="margin-top:1.5rem">
+    <h3>Reviews</h3>
+    {% for r in reviews %}
+    <div class="card" style="padding:1rem">
+        <span class="stars">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</span>
+        <span style="color:var(--muted);font-size:0.85rem;margin-left:0.5rem">{{ r.review_date }}</span>
+        {% if r.review_comment %}<p style="margin-top:0.4rem">{{ r.review_comment }}</p>{% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p style="color:var(--muted);margin-top:1rem">No reviews yet.</p>
+{% endif %}
+{% endblock %}

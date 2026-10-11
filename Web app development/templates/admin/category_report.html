@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Admin · Category Report – TCN{% endblock %}
+{% block body %}
+<h2 class="no-print">Category Report</h2>
+
+<form method="GET" action="{{ url_for('admin_category_report') }}" class="no-print"
+      style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:end;margin-bottom:1rem">
+    <div>
+        <label for="category">Service category</label>
+        <select name="category" id="category" onchange="this.form.submit()">
+            <option value="">-- choose a category --</option>
+            {% for c in categories %}
+            <option value="{{ c.service_category_id }}" {% if category and category.service_category_id == c.service_category_id %}selected{% endif %}>{{ c.service_category_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-accent">Show report</button>
+    {% if category %}<button type="button" class="btn btn-secondary" onclick="window.print()">Print this report</button>{% endif %}
+</form>
+
+{% if not category %}
+<p style="color:var(--muted)" class="no-print">Pick a category above to see every booking for that kind of service, then print it.</p>
+{% else %}
+<div class="widget">
+    <h2 style="margin-top:0">{{ category.service_category_name }} – Report</h2>
+    <p style="color:var(--muted);margin-top:0">Township Civic Network · generated {{ generated.strftime('%d %b %Y, %H:%M') }}</p>
+
+    <table style="margin-bottom:1rem">
+        <tbody>
+            <tr><th>Bookings</th><td>{{ summary.bookings }}</td>
+                <th>Completed</th><td>{{ summary.completed }}</td>
+                <th>Cancelled</th><td>{{ summary.cancelled }}</td></tr>
+            <tr><th>Freelancers involved</th><td>{{ summary.freelancers }}</td>
+                <th>Hours booked</th><td>{{ summary.hours }}</td>
+                <th>Total value (excl. cancelled)</th><td>R{{ '%.2f'|format(summary.value) }}</td></tr>
+        </tbody>
+    </table>
+
+    <div class="table-wrap"><table>
+        <thead><tr><th>Booking</th><th>Scheduled</th><th>Service</th><th>Customer</th><th>Freelancer</th>
+            <th>Location</th><th>Hours</th><th>Rate</th><th>Total</th><th>Status</th><th>Payment</th></tr></thead>
+        <tbody>
+        {% for r in rows %}
+        <tr>
+            <td>#{{ r.booking_id }}</td>
+            <td>{{ r.scheduled_date }}</td>
+            <td>{{ r.service_name }}</td>
+            <td>{{ r.cus_first_name }} {{ r.cus_last_name }}</td>
+            <td>{{ r.f_first_name }} {{ r.f_last_name }}</td>
+            <td>{{ r.location_name }}</td>
+            <td>{{ r.hours_booked }}</td>
+            <td>R{{ '%.2f'|format(r.agreed_hourly_rate) }}</td>
+            <td>R{{ '%.2f'|format(r.line_total) }}</td>
+            <td>{{ r.booking_status }}</td>
+            <td>{{ r.payment_status or '–' }}</td>
+        </tr>
+        {% else %}<tr><td colspan="11">No bookings for this category yet.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+</div>
+{% endif %}
+{% endblock %}

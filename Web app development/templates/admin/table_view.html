@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Admin · {{ name }} – TCN{% endblock %}
+{% block body %}
+<h2>Table: {{ name }}</h2>
+<a href="{{ url_for('admin_tables') }}" class="btn btn-sm btn-secondary">&larr; Back to tables</a>
+
+<div class="widget" style="margin:1rem 0">
+    <h3>Add a row</h3>
+    <form method="POST" action="{{ url_for('admin_table_add_row', name=name) }}" style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:end">
+        {% for c in cols if c != 'id' %}
+        <div><label>{{ c }}</label><input type="text" name="{{ c }}"></div>
+        {% endfor %}
+        <button type="submit" class="btn btn-accent">Add</button>
+    </form>
+</div>
+
+<div class="table-wrap"><table>
+    <thead><tr>{% for c in cols %}<th>{{ c }}</th>{% endfor %}<th>Action</th></tr></thead>
+    <tbody>
+    {% for row in rows %}
+    <tr>{% for v in row %}<td>{{ v if v is not none else '–' }}</td>{% endfor %}
+        <td><form method="POST" action="{{ url_for('admin_table_delete_row', name=name, row_id=row[0]) }}" onsubmit="return confirm('Delete this row?')">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button></form></td>
+    </tr>
+    {% else %}<tr><td colspan="{{ cols|length + 1 }}">No rows yet.</td></tr>{% endfor %}
+    </tbody>
+</table></div>
+{% endblock %}

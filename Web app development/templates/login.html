@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Login – TCN{% endblock %}
+{% block body %}
+<h2>Login</h2>
+<p class="lead">Sign in as customer, freelancer or admin.</p>
+<form method="POST" class="form-card">
+    <input type="hidden" name="next" value="{{ next or '' }}">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required autofocus placeholder="you@example.com">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Login</button>
+</form>
+<p style="margin-top:1rem"><a href="{{ url_for('forgot_password') }}">Forgot password?</a></p>
+<div class="card" style="margin-top:1.5rem;max-width:440px;font-size:0.9rem;color:var(--muted)">
+    <strong>Demo accounts</strong> (password = first name + 123)<br>
+    Customer: alexandra221@gmail.com<br>
+    Freelancer: bonganimthembu@gmail.com<br>
+    Admin: unathi@tcn.local
+</div>
+{% endblock %}

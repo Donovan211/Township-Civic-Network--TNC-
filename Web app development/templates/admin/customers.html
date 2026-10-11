@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Admin · Customers – TCN{% endblock %}
+{% block body %}
+<h2>Customers</h2>
+<div class="table-wrap">
+<table>
+    <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Bookings</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for c in customers %}
+    <tr>
+        <td>{{ c.customer_id }}</td>
+        <td>{{ c.full_name }}</td>
+        <td>{{ c.cus_email }}</td>
+        <td>{{ c.cus_phone_num }}</td>
+        <td>{{ c.bookings|length }}</td>
+        <td><form method="POST" action="{{ url_for('admin_delete', kind='customer', item_id=c.customer_id) }}" onsubmit="return confirm('Delete this customer and all their bookings?')" style="display:inline"><button type="submit" class="btn btn-sm btn-danger">Delete</button></form></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Admin · Freelancers – TCN{% endblock %}
+{% block body %}
+<h2>Manage Freelancers</h2>
+<div style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+    <a href="{{ url_for('admin_freelancers') }}" class="btn btn-sm {% if not status %}btn-accent{% else %}btn-secondary{% endif %}">All</a>
+    {% for s in ['pending','verified','rejected'] %}
+    <a href="{{ url_for('admin_freelancers', status=s) }}" class="btn btn-sm {% if status == s %}btn-accent{% else %}btn-secondary{% endif %}">{{ s|capitalize }}</a>
+    {% endfor %}
+</div>
+<div class="table-wrap">
+<table>
+    <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Rating</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for f in freelancers %}
+    <tr>
+        <td>{{ f.full_name }}</td>
+        <td>{{ f.f_email }}</td>
+        <td><span class="badge badge-{% if f.verification_status == 'verified' %}verified{% else %}unverified{% endif %}">{{ f.verification_status }}</span></td>
+        <td>{% if f.avg_rating %}{{ f.avg_rating }} ({{ f.review_count }}){% else %}–{% endif %}</td>
+        <td>
+            <form method="POST" action="{{ url_for('admin_verify', freelancer_id=f.freelancer_id) }}" style="display:flex;gap:0.35rem;flex-wrap:wrap">
+                {% if f.verification_status != 'verified' %}
+                <button type="submit" name="action" value="verify" class="btn btn-sm btn-accent">Verify</button>
+                {% endif %}
+                {% if f.verification_status != 'rejected' %}
+                <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
+                {% endif %}
+                {% if f.verification_status != 'pending' %}
+                <button type="submit" name="action" value="pending" class="btn btn-sm btn-secondary">Reset</button>
+                {% endif %}
+            </form>
+            <form method="POST" action="{{ url_for('admin_delete', kind='freelancer', item_id=f.freelancer_id) }}" onsubmit="return confirm('Delete this freelancer and all their bookings?')" style="display:inline"><button type="submit" class="btn btn-sm btn-danger">Delete</button></form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

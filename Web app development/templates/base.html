@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Township Civic Network{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('home') }}" class="brand">Township Civic Network</a>
+
+        {% if session.get('user_id') %}
+            {% if session.user_type == 'admin' %}
+                <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+                <a href="{{ url_for('admin_freelancers') }}">Freelancers</a>
+                <a href="{{ url_for('admin_reports') }}">Reports</a>
+                <a href="{{ url_for('admin_bookings') }}">Bookings</a>
+                <a href="{{ url_for('admin_customers') }}">Customers</a>
+                <a href="{{ url_for('admin_analytics') }}">Analytics</a>
+                <a href="{{ url_for('admin_category_report') }}">Category Report</a>
+                <a href="{{ url_for('admin_tables') }}">Tables</a>
+            {% else %}
+                <a href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('freelancers') }}">Browse</a>
+                {% if session.user_type == 'customer' %}
+                    <a href="{{ url_for('my_orders') }}">My Orders</a>
+                {% elif session.user_type == 'freelancer' %}
+                    <a href="{{ url_for('my_bookings') }}">My Bookings</a>
+                    <a href="{{ url_for('my_services') }}">Services</a>
+                    <a href="{{ url_for('upload_portfolio') }}">Portfolio</a>
+                {% endif %}
+            {% endif %}
+            <div class="nav-right">
+                <span class="user-chip">{{ session.get('user_name', 'User') }}{% if session.user_type == 'admin' %} · Admin{% endif %}</span>
+                {% if session.user_type != 'admin' %}
+                    <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
+                {% endif %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        {% else %}
+            <a href="{{ url_for('how_it_works') }}">How it works</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <div class="nav-right">
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register_customer') }}">Register Customer</a>
+                <a href="{{ url_for('register_freelancer') }}">Register Freelancer</a>
+            </div>
+        {% endif %}
+    </nav>
+
+    <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+
+    <main class="container">
+        {% block body %}{% endblock %}
+    </main>
+
+    <footer>
+        <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:space-between;align-items:center;padding:0 1rem">
+            <div>
+                <strong>Township Civic Network</strong><br>
+                <span style="font-size:0.85rem">Connecting local skills with local needs</span>
+            </div>
+            <div style="display:flex;gap:1.25rem;font-size:0.9rem">
+                <a href="{{ url_for('how_it_works') }}" style="color:var(--muted)">How it works</a>
+                <a href="{{ url_for('about') }}" style="color:var(--muted)">About</a>
+                <a href="{{ url_for('login') }}" style="color:var(--muted)">Login</a>
+            </div>
+            <div style="font-size:0.85rem;color:var(--muted)">&copy; {{ now().year }} TCN</div>
+        </div>
+    </footer>
+</body>
+</html>

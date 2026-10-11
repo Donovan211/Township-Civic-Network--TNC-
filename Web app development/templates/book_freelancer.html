@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Book {{ freelancer.f_first_name }} – TCN{% endblock %}
+
+{% block body %}
+<h2>Book {{ freelancer.f_first_name }} {{ freelancer.f_last_name }}</h2>
+<p class="lead">Choose a service, date and location.</p>
+
+<form method="POST" class="form-card" style="max-width:480px">
+    <label for="service_id">Service</label>
+    <select id="service_id" name="service_id" required>
+        <option value="">– Select service –</option>
+        {% for s in services %}
+            <option value="{{ s.service_id }}">{{ s.service_name }}</option>
+        {% endfor %}
+    </select>
+    {% if not services %}
+        <p style="color:var(--danger); font-size:0.9rem">This freelancer has not listed any services yet.</p>
+    {% endif %}
+
+    <label for="hours">Hours needed</label>
+    <input type="number" id="hours" name="hours" step="0.5" min="0.5" max="24" value="2" required>
+
+    <label for="rate">Agreed hourly rate (R)</label>
+    <input type="number" id="rate" name="rate" step="0.01" min="50" value="200" required>
+
+    <label for="scheduled_date">Scheduled Date</label>
+    <input type="date" id="scheduled_date" name="scheduled_date" required>
+
+    <label for="scheduled_time">Scheduled Time</label>
+    <input type="time" id="scheduled_time" name="scheduled_time" required>
+
+    <label for="location_id">Location</label>
+    <select id="location_id" name="location_id" required>
+        {% for loc in locations %}
+            <option value="{{ loc.location_id }}">{{ loc.location_name }}, {{ loc.municipality_name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="payment_method">Preferred Payment Method</label>
+    <select id="payment_method" name="payment_method">
+        <option value="eft">EFT</option>
+        <option value="cash">Cash</option>
+        <option value="card">Card</option>
+    </select>
+
+    <button type="submit" {% if not services %}disabled{% endif %}>Confirm Booking</button>
+</form>
+
+<p style="margin-top:1rem"><a href="{{ url_for('freelancer_profile', freelancer_id=freelancer.freelancer_id) }}">← Back to profile</a></p>
+{% endblock %}

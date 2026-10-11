@@ -25,7 +25,8 @@ CHECK (payment_method IN ('cash', 'card', 'eft')),
 ADD CONSTRAINT ck_payment_amount
 CHECK (payment_amount >0),
 ADD CONSTRAINT ck_payment_status
-CHECK (payment_status IN ('pending', 'paid', 'refunded'));
+-- 'cancelled' added: the app marks an unpaid payment as cancelled when a booking is cancelled
+CHECK (payment_status IN ('pending', 'paid', 'refunded', 'cancelled'));
 
 ALTER TABLE review
 ADD CONSTRAINT ck_review_rating

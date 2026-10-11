@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}How it works – TCN{% endblock %}
+{% block body %}
+<h1>How it works</h1>
+<p class="lead">Three simple roles. One platform.</p>
+
+<div class="card-grid">
+    <div class="card">
+        <h3>1. Customers</h3>
+        <ol style="margin-left:1.2rem;margin-top:0.5rem">
+            <li>Register and log in</li>
+            <li>Browse verified freelancers (search & filter by category)</li>
+            <li>Book a service with date, hours and rate</li>
+            <li>Track orders, pay, leave a review</li>
+            <li>Report any safety concern</li>
+        </ol>
+    </div>
+    <div class="card">
+        <h3>2. Freelancers</h3>
+        <ol style="margin-left:1.2rem;margin-top:0.5rem">
+            <li>Register (status starts as pending)</li>
+            <li>Admin verifies your account</li>
+            <li>Add services and portfolio photos</li>
+            <li>Confirm or complete bookings</li>
+            <li>Build ratings and earn</li>
+        </ol>
+    </div>
+    <div class="card">
+        <h3>3. Administrators</h3>
+        <ol style="margin-left:1.2rem;margin-top:0.5rem">
+            <li>Verify or reject freelancers</li>
+            <li>Review safety reports</li>
+            <li>Monitor bookings and payments</li>
+            <li>View platform statistics</li>
+        </ol>
+    </div>
+</div>
+
+<div class="card" style="margin-top:1.5rem">
+    <h3>Booking lifecycle</h3>
+    <p style="margin-top:0.5rem">
+        <span class="badge badge-pending">pending</span> →
+        <span class="badge badge-confirmed">confirmed</span> →
+        <span class="badge badge-completed">completed</span>
+        &nbsp;·&nbsp; Payment moves from pending → paid when the job is completed.
+        Cancelled bookings stop the payment.
+    </p>
+</div>
+{% endblock %}

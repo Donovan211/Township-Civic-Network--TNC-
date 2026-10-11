@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard – TCN{% endblock %}
+{% block body %}
+<h2>Admin Dashboard</h2>
+<p class="lead">Platform overview and pending actions.</p>
+
+<div class="stats-row" style="background:linear-gradient(135deg,var(--primary),var(--primary-dark));padding:1.25rem;border-radius:var(--radius);color:#fff;margin-bottom:1.5rem">
+    <div class="stat-box"><div class="num">{{ stats.customers }}</div><div class="label">Customers</div></div>
+    <div class="stat-box"><div class="num">{{ stats.verified }}</div><div class="label">Verified</div></div>
+    <div class="stat-box"><div class="num">{{ stats.bookings }}</div><div class="label">Bookings</div></div>
+    <div class="stat-box"><div class="num">R{{ '%.0f'|format(stats.revenue) }}</div><div class="label">Revenue</div></div>
+    <div class="stat-box"><div class="num">{{ stats.open_reports }}</div><div class="label">Open reports</div></div>
+</div>
+
+<div class="dash-grid">
+    <div class="widget">
+        <h3>Pending Verifications ({{ pending_freelancers|length }})</h3>
+        {% if pending_freelancers %}
+            {% for f in pending_freelancers %}
+            <div style="padding:0.6rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem">
+                <div>
+                    <strong>{{ f.full_name }}</strong><br>
+                    <small>{{ f.f_email }} · {{ f.f_phone_num }}</small>
+                </div>
+                <form method="POST" action="{{ url_for('admin_verify', freelancer_id=f.freelancer_id) }}" style="display:flex;gap:0.35rem">
+                    <button type="submit" name="action" value="verify" class="btn btn-sm btn-accent">Verify</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-sm btn-danger">Reject</button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color:var(--muted)">No pending freelancers.</p>
+        {% endif %}
+        <a href="{{ url_for('admin_freelancers') }}" class="btn btn-sm" style="margin-top:0.75rem">All freelancers</a>
+    </div>
+    <div class="widget">
+        <h3>Open Safety Reports</h3>
+        {% if open_reports %}
+            {% for r in open_reports %}
+            <div style="padding:0.5rem 0;border-bottom:1px solid var(--border)">
+                <strong>#{{ r.report_id }}</strong> {{ r.report_reason }}
+                <span class="badge badge-open">{{ r.report_status }}</span>
+                <br><small>{{ r.report_type }} · {{ r.report_date }} · Booking #{{ r.booking_id }}</small>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p style="color:var(--muted)">No open reports.</p>
+        {% endif %}
+        <a href="{{ url_for('admin_reports') }}" class="btn btn-sm" style="margin-top:0.75rem">Manage reports</a>
+    </div>
+</div>
+
+<div class="widget" style="margin-top:1.25rem">
+    <h3>Recent Bookings</h3>
+    <div class="table-wrap">
+    <table>
+        <thead><tr><th>#</th><th>Date</th><th>Customer</th><th>Freelancer</th><th>Status</th><th>Amount</th></tr></thead>
+        <tbody>
+        {% for b in recent_bookings %}
+        <tr>
+            <td>{{ b.booking_id }}</td>
+            <td>{{ b.booking_date }}</td>
+            <td>{{ b.customer.cus_first_name }}</td>
+            <td>{{ b.freelancer.f_first_name }}</td>
+            <td><span class="badge badge-{{ b.booking_status }}">{{ b.booking_status }}</span></td>
+            <td>{% if b.payment %}R{{ '%.2f'|format(b.payment.payment_amount) }}{% else %}–{% endif %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}

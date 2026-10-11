@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Home – Township Civic Network{% endblock %}
+{% block body %}
+<section class="hero">
+    <h1>Skills in your township. Work in your community.</h1>
+    <p>
+        Township Civic Network connects residents with verified local freelancers —
+        plumbers, electricians, tutors, cleaners and more. Fair rates. Real reviews. Safer bookings.
+    </p>
+    <div class="stats-row">
+        <div class="stat-box"><div class="num">{{ stats.verified }}</div><div class="label">Verified freelancers</div></div>
+        <div class="stat-box"><div class="num">{{ stats.completed }}</div><div class="label">Jobs completed</div></div>
+        <div class="stat-box"><div class="num">{{ stats.reviews }}</div><div class="label">Reviews</div></div>
+        <div class="stat-box"><div class="num">{{ stats.customers }}</div><div class="label">Customers</div></div>
+    </div>
+    {% if not session.get('user_id') %}
+        <a href="{{ url_for('register_customer') }}" class="btn">Find a Freelancer</a>
+        <a href="{{ url_for('register_freelancer') }}" class="btn btn-secondary" style="margin-left:0.5rem">Offer Your Skills</a>
+    {% else %}
+        <a href="{{ url_for('freelancers') }}" class="btn">Browse Freelancers</a>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary" style="margin-left:0.5rem">Dashboard</a>
+    {% endif %}
+</section>
+
+{% if categories %}
+<h2 style="margin-top:0.5rem">Service Categories</h2>
+<div class="card-grid" style="margin-bottom:2rem">
+    {% for c in categories %}
+    <div class="card" style="padding:1rem; text-align:center">
+        <h3 style="font-size:1rem; margin:0">{{ c.service_category_name }}</h3>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if top_freelancers %}
+<h2>Featured Freelancers</h2>
+<div class="card-grid">
+    {% for f in top_freelancers %}
+    <div class="card">
+        <div class="card-header">
+            <img src="{{ url_for('static', filename='uploads/' + (f.profile_pic or 'default.jpg')) }}"
+                 alt="" class="profile-pic-sm" onerror="this.src='https://via.placeholder.com/48?text={{ f.f_first_name[0] }}'">
+            <div>
+                <h3 style="margin:0;font-size:1.05rem">{{ f.f_first_name }} {{ f.f_last_name }}</h3>
+                <span class="badge badge-verified">Verified</span>
+            </div>
+        </div>
+        {% if f.avg_rating %}
+            <p class="stars">{{ '★' * f.avg_rating|int }}{{ '☆' * (5 - f.avg_rating|int) }}
+                <span style="color:var(--muted);font-size:0.85rem">({{ f.avg_rating }})</span></p>
+        {% endif %}
+        {% if f.bio %}<p style="font-size:0.9rem;color:var(--muted);margin-top:0.4rem">{{ f.bio[:90] }}{% if f.bio|length > 90 %}…{% endif %}</p>{% endif %}
+        {% if session.get('user_id') %}
+        <div class="btn-group">
+            <a href="{{ url_for('freelancer_profile', freelancer_id=f.freelancer_id) }}" class="btn btn-sm">Profile</a>
+            {% if session.user_type == 'customer' %}
+            <a href="{{ url_for('book_freelancer', freelancer_id=f.freelancer_id) }}" class="btn btn-sm btn-accent">Book</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if recent_reviews %}
+<h2 style="margin-top:2rem">Recent Reviews</h2>
+{% for r in recent_reviews %}
+<div class="card" style="padding:1rem">
+    <span class="stars">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</span>
+    <span style="color:var(--muted);font-size:0.85rem;margin-left:0.5rem">{{ r.review_date }}</span>
+    {% if r.review_comment %}<p style="margin-top:0.35rem">“{{ r.review_comment }}”</p>{% endif %}
+</div>
+{% endfor %}
+{% endif %}
+{% endblock %}

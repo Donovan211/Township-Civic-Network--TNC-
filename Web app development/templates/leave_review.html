@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Leave Review – TCN{% endblock %}
+
+{% block body %}
+<h2>Leave a Review</h2>
+<p class="lead">
+    Booking #{{ booking.booking_id }} with
+    {{ booking.freelancer.f_first_name }} {{ booking.freelancer.f_last_name }}
+    on {{ booking.scheduled_date }}.
+</p>
+
+<form method="POST" class="form-card">
+    <label for="rating">Rating (1–5)</label>
+    <select id="rating" name="rating" required>
+        <option value="5">5 – Excellent</option>
+        <option value="4">4 – Good</option>
+        <option value="3">3 – Average</option>
+        <option value="2">2 – Poor</option>
+        <option value="1">1 – Very Poor</option>
+    </select>
+
+    <label for="comment">Comment (optional)</label>
+    <textarea id="comment" name="comment" maxlength="300" placeholder="Share your experience..."></textarea>
+
+    <button type="submit">Submit Review</button>
+</form>
+
+<p style="margin-top:1rem"><a href="{{ url_for('my_orders') }}">← Back to My Orders</a></p>
+{% endblock %}

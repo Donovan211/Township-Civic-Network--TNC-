@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile – TCN{% endblock %}
+{% block body %}
+<h2>Edit Profile</h2>
+<form method="POST" class="form-card">
+    {% if session.user_type == 'customer' %}
+        <label>First Name</label>
+        <input type="text" name="first_name" value="{{ user.cus_first_name }}" required>
+        <label>Last Name</label>
+        <input type="text" name="last_name" value="{{ user.cus_last_name }}" required>
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ user.cus_phone_num }}" required>
+        <p style="margin-top:0.75rem;color:var(--muted);font-size:0.9rem">Email cannot be changed: {{ user.cus_email }}</p>
+    {% else %}
+        <label>First Name</label>
+        <input type="text" name="first_name" value="{{ user.f_first_name }}" required>
+        <label>Last Name</label>
+        <input type="text" name="last_name" value="{{ user.f_last_name }}" required>
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ user.f_phone_num }}" required>
+        <label>Bio</label>
+        <textarea name="bio" maxlength="500">{{ user.bio or '' }}</textarea>
+        <p style="margin-top:0.75rem;color:var(--muted);font-size:0.9rem">Email cannot be changed: {{ user.f_email }}</p>
+    {% endif %}
+    <button type="submit">Save Changes</button>
+</form>
+<p style="margin-top:1rem"><a href="{{ url_for('dashboard') }}">← Dashboard</a></p>
+{% endblock %}

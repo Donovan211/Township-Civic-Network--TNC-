@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Admin · Tables – TCN{% endblock %}
+{% block body %}
+<h2>Manage Tables</h2>
+
+<div class="widget" style="margin-bottom:1.25rem">
+    <h3>Create a new table</h3>
+    <form method="POST" action="{{ url_for('admin_create_table') }}">
+        <label>Table name</label>
+        <input type="text" name="table_name" placeholder="e.g. announcements" required>
+        <p style="color:var(--muted);font-size:0.9rem">An <code>id</code> column is added automatically. Fill in up to 5 columns:</p>
+        {% for i in range(5) %}
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap">
+            <input type="text" name="col_name" placeholder="column name">
+            <select name="col_type">{% for label in types %}<option>{{ label }}</option>{% endfor %}</select>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-accent">Create table</button>
+    </form>
+</div>
+
+<div class="widget" style="margin-bottom:1.25rem">
+    <h3>Your custom tables</h3>
+    {% for t in tables %}
+    <div style="padding:0.5rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <strong>{{ t }}</strong>
+        <span style="display:flex;gap:0.35rem">
+            <a href="{{ url_for('admin_table_view', name=t) }}" class="btn btn-sm">Open</a>
+            <form method="POST" action="{{ url_for('admin_drop_table', name=t) }}" onsubmit="return confirm('Remove table {{ t }} and all its data?')">
+                <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+            </form>
+        </span>
+    </div>
+    {% else %}<p style="color:var(--muted)">No custom tables yet.</p>{% endfor %}
+</div>
+
+<p style="color:var(--muted);font-size:0.9rem">Protected system tables (cannot be removed): {{ core|join(', ') }}</p>
+{% endblock %}

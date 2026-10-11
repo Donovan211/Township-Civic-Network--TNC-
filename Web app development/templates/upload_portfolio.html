@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Upload Portfolio – TCN{% endblock %}
+
+{% block body %}
+<h2>Upload Portfolio Photo</h2>
+<p class="lead">Show customers examples of your work.</p>
+
+<form method="POST" enctype="multipart/form-data" class="form-card">
+    <label for="portfolio_pic">Photo</label>
+    <input type="file" id="portfolio_pic" name="portfolio_pic" accept="image/*" required>
+
+    <label for="caption">Caption (optional)</label>
+    <input type="text" id="caption" name="caption" maxlength="200" placeholder="e.g. Kitchen sink repair – Soweto">
+
+    <button type="submit">Upload</button>
+</form>
+
+<p style="margin-top:1rem">
+    <a href="{{ url_for('freelancer_profile', freelancer_id=session.user_id) }}">← View my profile</a>
+</p>
+{% endblock %}

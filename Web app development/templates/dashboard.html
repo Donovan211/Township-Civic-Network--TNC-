@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – TCN{% endblock %}
+{% block body %}
+<h2>Dashboard</h2>
+
+<div class="card" style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap">
+    {% if session.user_type == 'customer' %}
+        <img src="{{ url_for('static', filename='uploads/' + (user.profile_pic or 'default.jpg')) }}"
+             class="profile-pic" alt="" onerror="this.src='https://via.placeholder.com/96?text=U'">
+        <div>
+            <h3 style="margin:0">{{ user.full_name }}</h3>
+            <p style="color:var(--muted);margin:0.25rem 0 0">Customer · {{ user.cus_email }}</p>
+            {% if total_spent is defined %}
+            <p style="margin-top:0.4rem"><strong>Total spent:</strong> R{{ '%.2f'|format(total_spent) }}
+                {% if pending_count %}· <strong>{{ pending_count }}</strong> pending{% endif %}</p>
+            {% endif %}
+        </div>
+    {% else %}
+        <img src="{{ url_for('static', filename='uploads/' + (user.profile_pic or 'default.jpg')) }}"
+             class="profile-pic" alt="" onerror="this.src='https://via.placeholder.com/96?text=U'">
+        <div>
+            <h3 style="margin:0">{{ user.full_name }}</h3>
+            <p style="color:var(--muted);margin:0.25rem 0 0">
+                Freelancer · {{ user.f_email }}
+                {% if user.verification_status == 'verified' %}
+                    <span class="badge badge-verified">Verified</span>
+                {% else %}
+                    <span class="badge badge-unverified">{{ user.verification_status }}</span>
+                {% endif %}
+            </p>
+            <p style="margin-top:0.4rem">
+                {% if earnings is defined %}<strong>Earnings:</strong> R{{ '%.2f'|format(earnings) }}{% endif %}
+                {% if avg_rating %}· <span class="stars">{{ '★' * avg_rating|int }}</span> {{ avg_rating }} ({{ review_count }}){% endif %}
+                {% if pending_count %}· <strong>{{ pending_count }}</strong> pending jobs{% endif %}
+            </p>
+        </div>
+    {% endif %}
+</div>
+
+<div class="dash-grid" style="margin-top:1.25rem">
+    <div class="widget">
+        <h3>Recent Activity</h3>
+        {% if recent_bookings %}
+            <ul style="list-style:none;padding:0">
+            {% for b in recent_bookings %}
+                <li style="padding:0.5rem 0;border-bottom:1px solid var(--border)">
+                    <strong>#{{ b.booking_id }}</strong>
+                    – {{ b.scheduled_date }} {{ b.scheduled_time.strftime('%H:%M') if b.scheduled_time else '' }}
+                    <span class="badge badge-{{ b.booking_status }}">{{ b.booking_status }}</span>
+                    <br><small>
+                    {% if session.user_type == 'customer' %}
+                        {{ b.freelancer.f_first_name }} {{ b.freelancer.f_last_name }}
+                    {% else %}
+                        {{ b.customer.cus_first_name }} {{ b.customer.cus_last_name }}
+                    {% endif %}
+                    {% if b.payment %} · R{{ '%.2f'|format(b.payment.payment_amount) }}{% endif %}
+                    </small>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-state" style="padding:1rem 0">No bookings yet.</p>
+        {% endif %}
+    </div>
+    <div class="widget">
+        <h3>Quick Links</h3>
+        <div class="btn-group" style="flex-direction:column;align-items:stretch">
+            {% if session.user_type == 'customer' %}
+                <a href="{{ url_for('freelancers') }}" class="btn btn-sm">Browse Freelancers</a>
+                <a href="{{ url_for('my_orders') }}" class="btn btn-sm btn-secondary">My Orders & Payments</a>
+            {% else %}
+                <a href="{{ url_for('my_bookings') }}" class="btn btn-sm">My Bookings</a>
+                <a href="{{ url_for('my_services') }}" class="btn btn-sm btn-secondary">Manage Services</a>
+                <a href="{{ url_for('upload_portfolio') }}" class="btn btn-sm btn-secondary">Upload Portfolio</a>
+                <a href="{{ url_for('freelancer_profile', freelancer_id=session.user_id) }}" class="btn btn-sm btn-accent">View My Profile</a>
+            {% endif %}
+            <a href="{{ url_for('edit_profile') }}" class="btn btn-sm btn-secondary">Edit Profile</a>
+            <a href="{{ url_for('upload_profile_pic') }}" class="btn btn-sm btn-secondary">Change Photo</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

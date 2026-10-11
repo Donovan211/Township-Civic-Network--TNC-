@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Browse Freelancers – TCN{% endblock %}
+{% block body %}
+<h2>Verified Freelancers</h2>
+
+<form method="GET" class="card" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:flex-end;margin-bottom:1.5rem">
+    <div style="flex:1;min-width:160px">
+        <label>Search</label>
+        <input type="text" name="q" value="{{ q or '' }}" placeholder="Name or keyword…">
+    </div>
+    <div style="min-width:180px">
+        <label>Category</label>
+        <select name="category">
+            <option value="">All categories</option>
+            {% for c in categories %}
+            <option value="{{ c.service_category_id }}" {% if category_id == c.service_category_id %}selected{% endif %}>
+                {{ c.service_category_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div style="min-width:140px">
+        <label>Sort by</label>
+        <select name="sort">
+            <option value="name" {% if sort == 'name' %}selected{% endif %}>Name</option>
+            <option value="rating" {% if sort == 'rating' %}selected{% endif %}>Rating</option>
+            <option value="reviews" {% if sort == 'reviews' %}selected{% endif %}>Most reviews</option>
+        </select>
+    </div>
+    <button type="submit" class="btn" style="margin-top:0">Filter</button>
+</form>
+
+{% if freelancers %}
+<div class="card-grid">
+    {% for f in freelancers %}
+    <div class="card">
+        <div class="card-header">
+            <img src="{{ url_for('static', filename='uploads/' + (f.profile_pic or 'default.jpg')) }}"
+                 class="profile-pic-sm" alt="" onerror="this.src='https://via.placeholder.com/48?text={{ f.f_first_name[0] }}'">
+            <div>
+                <h3 style="margin:0;font-size:1.1rem">{{ f.f_first_name }} {{ f.f_last_name }}</h3>
+                <span class="badge badge-verified">Verified</span>
+            </div>
+        </div>
+        {% if f.avg_rating %}
+            <p class="stars">{{ '★' * f.avg_rating|int }}{{ '☆' * (5 - f.avg_rating|int) }}
+                <span style="color:var(--muted);font-size:0.85rem">({{ f.avg_rating }} · {{ f.review_count }} reviews)</span></p>
+        {% else %}
+            <p style="color:var(--muted);font-size:0.9rem">No reviews yet</p>
+        {% endif %}
+        {% if f.service_list %}
+            <p style="font-size:0.85rem;color:var(--muted);margin-top:0.35rem">
+                {% for s in f.service_list[:3] %}{{ s.service_name }}{% if not loop.last %}, {% endif %}{% endfor %}
+                {% if f.service_list|length > 3 %}…{% endif %}
+            </p>
+        {% endif %}
+        <div class="btn-group">
+            <a href="{{ url_for('freelancer_profile', freelancer_id=f.freelancer_id) }}" class="btn btn-sm">View Profile</a>
+            {% if session.user_type == 'customer' %}
+                <a href="{{ url_for('book_freelancer', freelancer_id=f.freelancer_id) }}" class="btn btn-sm btn-accent">Book</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><p>No freelancers match your filters.</p></div>
+{% endif %}
+{% endblock %}

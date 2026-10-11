@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}403 – Forbidden{% endblock %}
+{% block body %}
+<div class="empty-state" style="padding:4rem 1rem">
+    <h1 style="font-size:3rem;color:var(--danger)">403</h1>
+    <p>You don’t have permission to view this page.</p>
+    <a href="{{ url_for('home') }}" class="btn">Go Home</a>
+</div>
+{% endblock %}
